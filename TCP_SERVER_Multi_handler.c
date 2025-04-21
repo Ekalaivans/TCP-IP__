@@ -10,17 +10,22 @@
 int main()
   {
 	  int server_fd,new_socket;
+	  int opt =1;
 	  struct sockaddr_in address;
 	  int adrlen = sizeof(address);
 	  char buffer[Buffer_size];
 
 	  // SOCKET CREATION...........................
-	  server_fd = socket(AF_INET, SOCK_STREAM, 0);
-	  if(server_fd == 0)
+	//  server_fd = socket(AF_INET, SOCK_STREAM, 0);
+	  if((server_fd = socket(AF_INET,SOCK_STREAM,0))==0)
 	  {
-		  perror("Socket.... failed");
+		  perror("Socket..CREATION.. failed");
 		  exit(EXIT_FAILURE);
 	  }
+	   
+	  setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt,sizeof(opt));
+
+
 	  //ADDRESS SETUP STRUCTURE CREATION.............
 
 	  address.sin_family = AF_INET;
@@ -40,38 +45,32 @@ int main()
            if(listen(server_fd,5) < 0)
 	     {
 	       perror(" Listening... failed");
-	       close(server_fd);
+	  //     close(server_fd);
 	       exit(EXIT_FAILURE);
 	       }
 
 	     printf("Server listening to the port......%d.....\n",PORT);
 
-      while(1)
-	 {
-	     printf("\n... N waiting for the another client to serve the message ...........\n");
+while(1)
+ {
+ printf("\n... N waiting for the another client to connect..........\n");
 
 		// ACEPTING THE CONNECTIONS.............
 
-                new_socket = accept(server_fd,(struct sockaddr*)&address,(socklen_t *)&address);
+  new_socket = accept(server_fd,(struct sockaddr*)&address,&adrlen);
                 if(new_socket < 0)
 	          {
-                       perror("...Connection .....acceptance failed.........\n");
+                       perror("...Connection .....acceptance failed. || waiting for the next client........\n");
+		       sleep(1);
                         continue;
 		  } // it performs skipping action of failed clients
 
-             memset(buffer,0,Buffer_size);
-             int valread = recv(new_socket, buffer , Buffer_size, 0);
-             if(valread <= 0)
-	       {
-	          printf("Msg recived from the client is failed .....%s \n",buffer);
-                  }
-              else
-	         {
-	                printf(" MSG recieved from the client ....%s\n", buffer);
-                 }
-                     close(new_socket);
-       }
-       close(server_fd);
-        return 0;
-   }	
+	     int valread = read(new_socket,buffer, Buffer_size);
+             buffer[valread]='\0';
+             printf("The nessage has been recieved fronm the client....%s\n",buffer);
+	     close(new_socket);
+	 }
+      close(server_fd);
+      return 0;
 
+  }

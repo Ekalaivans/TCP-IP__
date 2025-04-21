@@ -14,7 +14,8 @@ int main()
 	 char *msg= " Vanakkam da mapla JDM seemaiyala irunthu........";
 
 	//SOCKET CREATION..............
-	
+	while(1)
+	{
 	sock = socket(AF_INET,SOCK_STREAM, 0);
 	if(sock < 0)
               {
@@ -47,6 +48,7 @@ int main()
 	printf("The has been sent to the server .....%s\n",msg);
 
 	close(sock);
+       }
 	return 0;
 
     }
