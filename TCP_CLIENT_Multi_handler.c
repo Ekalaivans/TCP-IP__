@@ -16,36 +16,36 @@ int main()
 	//SOCKET CREATION..............
 	while(1)
 	{
-	sock = socket(AF_INET,SOCK_STREAM, 0);
-	if(sock < 0)
+	   sock = socket(AF_INET,SOCK_STREAM, 0);
+           if(sock < 0)
               {
-		      perror("The Scoket creation is failed.....");
-		      return -1;
+                perror("The Scoket creation is failed.....");
+		return -1;
 	      }
 	// SERVER SETUP 
 	
-        serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(PORT);
+               serv_addr.sin_family = AF_INET;
+               serv_addr.sin_port = htons(PORT);
 	 
 	// Ip address to binary conversion 
 	
-	if(inet_pton(AF_INET,"127.0.0.1",&serv_addr.sin_addr) <=0)
-	{
-		perror("Address not valid....");
-		return -1;
-	}
+         	if(inet_pton(AF_INET,"127.0.0.1",&serv_addr.sin_addr) <=0)
+	           {
+	         	perror("Address not valid....");
+	        	return -1;
+                    }
 	//Server connecting 
 	
-	if(connect(sock,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0)
+	if(connect(sock,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0) //  client creates a socket to contact the server
          	
 	     {
 	       perror("Failed to connect.....\n");
                return -1;
 	     }
 	  //message sending to the server side 
-
-	send(sock,msg,strlen(msg),0);
-	printf("The has been sent to the server .....%s\n",msg);
+        int count;
+	send(sock,msg,strlen(msg),0);// if its connected the client send the data
+	printf("The has been sent to the server .no. %d....%s\n",count,msg);
 
 	close(sock);
        }
